@@ -5,6 +5,10 @@ pipeline {
         VENV_DIR = ".venv"
     }
 
+    triggers { 
+        cron('H/5 * * * *') // exécution toutes les 5 minutes 
+    }
+
     stages {
 
         stage('Setup Virtual Environment') {
