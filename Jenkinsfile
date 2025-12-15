@@ -2,21 +2,13 @@ pipeline {
     agent any
 
     environment {
-        GITHUB_TOKEN = credentials('github-token')
         VENV_DIR = ".venv"
         HOST = "0.0.0.0"
         PORT = "5000"
         APP_MODULE = "app:app"  
     }
 
-    stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'main',
-                    url: 'https://github.com/USERNAME/REPO.git',
-                    credentialsId: 'github-token'
-            }
-        }
+
 
         stage('Setup Virtual Environment') {
             steps {
@@ -55,13 +47,12 @@ pipeline {
             }
         }
 
-        stage('Deploy (Local with Gunicorn)') {
+        stage('Run Application (Local)') {
             steps {
-                echo 'Starting Flask app locally using Gunicorn...'
+                echo 'Starting Flask app locally using Python server...'
                 bat """
-                call ${VENV_DIR}\\Scripts\\activate
-                start /B gunicorn --bind ${HOST}:${PORT} ${APP_MODULE} > gunicorn.log 2>&1
-                echo ✅ Gunicorn started on http://${HOST}:${PORT}
+                call %VENV_DIR%\\Scripts\\activate
+                start /B python app.py
                 """
             }
         }
